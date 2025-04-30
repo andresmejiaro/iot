@@ -1,0 +1,36 @@
+#require 'securerandom'
+#TOKEN = SecureRandom.hex(16)
+TOKEN = "42"
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/bionic64"
+  
+  config.vm.provider "virtualbox" do |vm|
+    vm.memory = "1024"
+    vm.cpus   = 1
+  end
+
+  config.vm.define "amejiaS" do |server|
+    server.vm.box = "ubuntu/bionic64"
+    server.vm.hostname = "amejiaS"
+    server.vm.network "private_network", ip: "192.168.56.110"
+    config.vm.synced_folder "shared/", "/home/vagrant/shared", owner: "vagrant", group: "vagrant", create: true
+
+    server.vm.provision "shell", inline: <<-SHELL
+      # install k3s in server mode
+      curl -sfL https://get.k3s.io | \
+        INSTALL_K3S_EXEC="server --token=#{TOKEN} \
+          --tls-san=192.168.56.110 \
+          --bind-address=0.0.0.0 \
+          --node-ip=192.168.56.110 \
+          --advertise-address=192.168.56.110" \
+        sh -
+
+      sed -i 's|127.0.0.1:6443|192.168.56.110:6443|g' /etc/rancher/k3s/k3s.yaml
+      cp /etc/rancher/k3s/k3s.yaml /home/vagrant/
+      chown vagrant:vagrant /home/vagrant/k3s.yaml
+      sudo kubectl apply -f /home/vagrant/shared
+  SHELL
+  end
+
+end
