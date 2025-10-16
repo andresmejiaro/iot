@@ -24912,9 +24912,9 @@ metadata:
 spec:
   ports:
   - name: server
-    port: 8081
+    port: 8888
     protocol: TCP
-    targetPort: 8081
+    targetPort: 8888
   - name: metrics
     port: 8084
     protocol: TCP
@@ -25767,7 +25767,7 @@ spec:
           timeoutSeconds: 5
         name: argocd-repo-server
         ports:
-        - containerPort: 8081
+        - containerPort: 8888
         - containerPort: 8084
         readinessProbe:
           httpGet:
@@ -26761,7 +26761,7 @@ spec:
         matchLabels:
           app.kubernetes.io/name: argocd-applicationset-controller
     ports:
-    - port: 8081
+    - port: 8888
       protocol: TCP
   - from:
     - namespaceSelector: {}

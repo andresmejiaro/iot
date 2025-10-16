@@ -8,7 +8,7 @@ if ! command -v argocd > argocd >/dev/null 2>&1; then
 fi
 ## Expose services https://k3d.io/v5.3.0/usage/exposing_services/
 
-k3d cluster create --api-port 6550 -p "8081:80@loadbalancer" -p "8443:443@loadbalancer" --agents 2
+k3d cluster create --api-port 6550 -p "8888:80@loadbalancer" -p "8443:443@loadbalancer" --agents 2
 
 ## create namespaces
 
@@ -25,3 +25,5 @@ kubectl apply -f confs/Ingress.yaml -n argocd
 kubectl -n argocd patch deployment argocd-server \
   --type='json' \
   -p='[{"op": "add", "path": "/spec/template/spec/containers/0/args/-", "value": "--insecure"}]'  
+
+

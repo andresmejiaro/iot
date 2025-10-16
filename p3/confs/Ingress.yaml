@@ -5,7 +5,7 @@
     namespace: argocd
   spec:
     rules:
-      - host: app1.com
+      - host: localhost
         http:
           paths:
             - path: /
